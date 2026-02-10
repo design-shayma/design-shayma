@@ -245,6 +245,27 @@ footer {
   opacity: 0.9;
   text-align: center;
 }
+  /* ===== BEST SELLER BADGE ===== */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  color: white;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 20px;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+  .badge {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
 
 </style>
 </head>
@@ -327,6 +348,9 @@ footer {
 <!-- PRODUCT 4 -->
 <div class="product">
   <div class="slider">
+
+    <div class="badge">الأكثر مبيعًا</div>
+    
     <div class="slides">
       <img src="product4-1.jpg">
       <img src="product4-2.jpg">
@@ -345,6 +369,9 @@ footer {
 <!-- PRODUCT 5 -->
 <div class="product">
   <div class="slider">
+    
+    <div class="badge">الأكثر مبيعًا</div>
+    
     <div class="slides">
       <img src="product5-1.jpg">
       <img src="product5-2.jpg"> 
@@ -617,6 +644,7 @@ document.querySelectorAll('.slider').forEach(slider => {
 </body>
 
 </html>
+
 
 
 
