@@ -233,14 +233,31 @@ footer {
     right: 15px;
   }
 }
+  .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delivery-inline {
+  color: #fff;
+  font-size: 14px;
+  opacity: 0.9;
+  text-align: center;
+}
 
 </style>
 </head>
 
 <body>
 
-<header>
+<header class="header">
   <h1>Magic.Shayma</h1>
+
+  <div class="delivery-inline">
+    🚚 التوصيل: يافا، اللد، الرملة، طيبة، الطيرة، أم الفحم، جلجولية
+  </div>
+
   <nav>
     <a href="#">Home</a>
     <a href="#products">Products</a>
@@ -600,6 +617,7 @@ document.querySelectorAll('.slider').forEach(slider => {
 </body>
 
 </html>
+
 
 
 
