@@ -112,9 +112,12 @@ nav a {
 .slides {
   display: flex;
   height: 100%;
-  transition: transform 0.4s ease-in-out;
+  transition: transform 0.35s ease;
+  width: 100%;
+  will-change: transform;
 }
-  .slides {
+  
+.slides {
   will-change: transform;
 }
 
@@ -123,6 +126,7 @@ nav a {
   flex-shrink: 0;
   height: 200px;
   object-fit: cover;
+  pointer-events: none; /* prevents fast touch glitches */
 }
 
 /* arrows */
@@ -626,7 +630,7 @@ document.querySelectorAll('.slider').forEach(slider => {
   let images = Array.from(slides.children);
   if (images.length <= 1) return;
 
-  // --- Clone for infinite loop ---
+  // --- clone first & last for infinite loop ---
   const firstClone = images[0].cloneNode(true);
   const lastClone = images[images.length - 1].cloneNode(true);
   slides.appendChild(firstClone);
@@ -638,44 +642,56 @@ document.querySelectorAll('.slider').forEach(slider => {
   let currentX = 0;
   let isDragging = false;
   let sliderWidth = slider.offsetWidth;
+  let allowSlide = true;
 
   function setTransition(on) {
     slides.style.transition = on ? 'transform 0.35s ease' : 'none';
   }
 
   function move() {
-    slides.style.transform = `translateX(-${index * sliderWidth}px)`;
+    slides.style.transform = `translateX(-${index * 100}%)`;
   }
 
   move();
 
-  // --- Buttons ---
-  next.addEventListener('click', () => snap(1));
-  prev.addEventListener('click', () => snap(-1));
-
-  function snap(direction) {
-    index += direction;
+  // --- buttons ---
+  next.addEventListener('click', () => {
+    if (!allowSlide) return;
+    allowSlide = false;
+    index++;
     setTransition(true);
     move();
+    slides.addEventListener('transitionend', () => {
+      fixLoop();
+      allowSlide = true;
+    }, { once: true });
+  });
 
-    slides.addEventListener('transitionend', fixLoop, { once: true });
-  }
+  prev.addEventListener('click', () => {
+    if (!allowSlide) return;
+    allowSlide = false;
+    index--;
+    setTransition(true);
+    move();
+    slides.addEventListener('transitionend', () => {
+      fixLoop();
+      allowSlide = true;
+    }, { once: true });
+  });
 
   function fixLoop() {
+    setTransition(false);
     if (index === images.length - 1) {
-      setTransition(false);
       index = 1;
-      move();
-    }
-    if (index === 0) {
-      setTransition(false);
+    } else if (index === 0) {
       index = images.length - 2;
-      move();
     }
+    move();
   }
 
-  // --- Touch ---
+  // --- touch/swipe ---
   slides.addEventListener('touchstart', e => {
+    if (!allowSlide) return;
     startX = e.touches[0].clientX;
     isDragging = true;
     setTransition(false);
@@ -685,19 +701,17 @@ document.querySelectorAll('.slider').forEach(slider => {
     if (!isDragging) return;
     currentX = e.touches[0].clientX;
     const diff = currentX - startX;
-    slides.style.transform = `translateX(${-(index * sliderWidth) + diff}px)`;
+    slides.style.transform = `translateX(calc(-${index * 100}% + ${diff}px))`;
   });
 
   slides.addEventListener('touchend', () => {
     if (!isDragging) return;
     isDragging = false;
-
     const diff = currentX - startX;
 
-    if (Math.abs(diff) > sliderWidth * 0.25) {
+    if (Math.abs(diff) > sliderWidth * 0.15) { // swipe sensitivity
       index += diff < 0 ? 1 : -1;
     }
-
     setTransition(true);
     move();
     slides.addEventListener('transitionend', fixLoop, { once: true });
@@ -714,6 +728,7 @@ document.querySelectorAll('.slider').forEach(slider => {
 </body>
 
 </html>
+
 
 
 
