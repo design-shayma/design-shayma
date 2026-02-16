@@ -619,27 +619,40 @@ document.querySelectorAll('.slider').forEach(slider => {
   const next = slider.querySelector('.next');
   let index = 0;
 
+  // Hide arrows if only one image
   if (images.length <= 1) {
     prev.style.display = 'none';
     next.style.display = 'none';
     return;
   }
 
-  next.addEventListener('click', () => {
-    index = Math.min(index + 1, images.length - 1);
+  function goToSlide(i) {
+    index = i;
     slides.scrollLeft = slides.clientWidth * index;
+  }
+
+  next.addEventListener('click', () => {
+    if (index === images.length - 1) {
+      goToSlide(0); // loop to first
+    } else {
+      goToSlide(index + 1);
+    }
   });
 
   prev.addEventListener('click', () => {
-    index = Math.max(index - 1, 0);
-    slides.scrollLeft = slides.clientWidth * index;
+    if (index === 0) {
+      goToSlide(images.length - 1); // loop to last
+    } else {
+      goToSlide(index - 1);
+    }
   });
 });
 </script>
-
+  
 </body>
 
 </html>
+
 
 
 
